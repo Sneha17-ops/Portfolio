@@ -11,7 +11,7 @@ const projects = [
     desc: "An intelligent visualization platform that transforms complex data into meaningful insights.",
     tech: ["Next.js", "Tailwind", "JavaScript", "Spring Boot", "PostgreSQL", "charts.js"],
     github: "https://github.com/Sneha17-ops/Optiviz",
-    live: "https://optiviz-frontend-8l7hjh17d-sneha17-ops-projects.vercel.app/",
+    live: "https://optiviz-frontend-ol70m78k5-sneha17-ops-projects.vercel.app/",
     image: "/image.png"
   },
   {

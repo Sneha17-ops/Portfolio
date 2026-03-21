@@ -60,28 +60,35 @@ function OrbitSkills({ skills }) {
   return (
     <group ref={groupRef}>
       {skills.map((skill, i) => {
-        const total = skills.length;
+        // 🔥 OPTIMIZED MULTI-LAYER ORBIT (NO OVERLAP)
+        const layer = Math.floor(i / 8); // 8 items per ring for better spacing
+        const layerIndex = i % 8;
 
-        // 🔥 MULTI-LAYER ORBIT (NO OVERLAP)
-        const layer = Math.floor(i / 10); // 10 items per ring
-        const layerIndex = i % 10;
+        const baseRadius = 8; // starting radius
+        const radiusIncrement = 3; // better spacing between rings
+        const radius = baseRadius + layer * radiusIncrement;
 
-        const radius = 7 + layer * 2.5; // expanding rings
-        const angle = (layerIndex / 10) * Math.PI * 2;
+        // Perfect circular distribution
+        const angle = (layerIndex / 8) * Math.PI * 2;
 
+        // Position calculation with better spacing
         const x = radius * Math.cos(angle);
         const z = radius * Math.sin(angle);
-        const y = layer * 0.6; // slight vertical separation
+        const y = (layer - 2) * 1.2; // improved vertical separation for balance
+
+        // Dynamic font size based on orbit proximity
+        const fontSize = layer === 0 ? 0.7 : 0.6 - layer * 0.05;
 
         return (
-          <Billboard key={i} position={[x, y, z]}>
+          <Billboard key={i} position={[x, y, z]} lockX={false} lockY={false} lockZ={false}>
             <Text
-              fontSize={0.6}
+              fontSize={Math.max(fontSize, 0.4)}
               color="#ffffff"
-              outlineWidth={0.015}
-              outlineColor="#000000"
+              outlineWidth={0.02}
+              outlineColor="#1a1a2e"
               anchorX="center"
               anchorY="middle"
+              maxWidth={3}
             >
               {skill}
             </Text>
