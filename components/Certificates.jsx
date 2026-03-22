@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Billboard, Text } from "@react-three/drei";
 import { useRef, useMemo, useState } from "react";
 
-/* ✅ SEEDED RANDOM (FIX HYDRATION) */
+/* ✅ SEEDED RANDOM */
 const seededRandom = (seed) => {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
@@ -15,18 +15,18 @@ function Galaxy() {
   const ref = useRef();
 
   const particles = useMemo(() => {
-    const count = 2000;
+    const count = 5000;
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
 
-      const radius = seededRandom(i * 5.3) * 7;
+      const radius = seededRandom(i * 5.3) * 12;
       const spin = radius * 2;
       const angle = seededRandom(i * 2.1) * Math.PI * 2;
 
       positions[i3] = Math.cos(angle + spin) * radius;
-      positions[i3 + 1] = (seededRandom(i * 3.7) - 0.5) * 1.5;
+      positions[i3 + 1] = (seededRandom(i * 3.7) - 0.5) * 2;
       positions[i3 + 2] = Math.sin(angle + spin) * radius;
     }
 
@@ -34,7 +34,7 @@ function Galaxy() {
   }, []);
 
   useFrame(() => {
-    if (ref.current) ref.current.rotation.y += 0.001;
+    if (ref.current) ref.current.rotation.y += 0.0007;
   });
 
   return (
@@ -48,24 +48,66 @@ function Galaxy() {
         />
       </bufferGeometry>
 
-      <pointsMaterial size={0.03} color="#c084fc" depthWrite={false} />
+      <pointsMaterial size={0.025} color="#c084fc" depthWrite={false} />
     </points>
   );
 }
 
+/* 🌠 SHOOTING STARS */
+function ShootingStars() {
+  const starsRef = useRef([]);
+
+  const stars = useMemo(() => {
+    return new Array(8).fill().map(() => ({
+      position: [
+        (Math.random() - 0.5) * 20,
+        Math.random() * 10,
+        (Math.random() - 0.5) * 20
+      ],
+      speed: 0.1 + Math.random() * 0.2,
+    }));
+  }, []);
+
+  useFrame(() => {
+    starsRef.current.forEach((star) => {
+      star.position.x += 0.15;
+      star.position.y -= 0.15;
+
+      if (star.position.x > 12 || star.position.y < -6) {
+        star.position.x = -12;
+        star.position.y = Math.random() * 10;
+      }
+    });
+  });
+
+  return (
+    <>
+      {stars.map((star, i) => (
+        <mesh
+          key={i}
+          ref={(el) => (starsRef.current[i] = el)}
+          position={star.position}
+        >
+          <sphereGeometry args={[0.05, 8, 8]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
 /* 🔄 ORBIT */
-function OrbitCertificates({ data, onHover, onLeave }) {
+function OrbitCertificates({ data, radius, speed, onHover, onLeave }) {
   const groupRef = useRef();
 
   useFrame(() => {
-    if (groupRef.current) groupRef.current.rotation.y += 0.002;
+    if (groupRef.current) groupRef.current.rotation.y += speed;
   });
 
   return (
     <group ref={groupRef}>
-      {data.map((cert, i) => {
+      {data.map((item, i) => {
         const angle = (i / data.length) * Math.PI * 2;
-        const radius = 5;
 
         const x = radius * Math.cos(angle);
         const z = radius * Math.sin(angle);
@@ -73,15 +115,15 @@ function OrbitCertificates({ data, onHover, onLeave }) {
         return (
           <Billboard key={i} position={[x, 0, z]}>
             <Text
-              fontSize={0.75}
+              fontSize={0.7}
               color="#ffffff"
-              outlineWidth={0.03}
+              outlineWidth={0.02}
               outlineColor="#000"
-              onPointerOver={() => onHover(cert)}
+              onPointerOver={() => item.file && onHover(item)}
               onPointerOut={onLeave}
-              onClick={() => window.open(cert.file, "_blank")}
+              onClick={() => item.file && window.open(item.file, "_blank")}
             >
-              {cert.name}
+              {item.name}
             </Text>
           </Billboard>
         );
@@ -109,7 +151,9 @@ export default function CertificateGalaxy() {
       name: "Udemy Certification",
       file: "/Udemy (1).pdf",
       desc: "Modern web development and technologies."
-    }
+    },
+    
+    
   ];
 
   return (
@@ -128,14 +172,15 @@ export default function CertificateGalaxy() {
         </p>
       </div>
 
-      <Canvas camera={{ position: [0, 0, 14] }}>
+      <Canvas camera={{ position: [0, 0, 18] }}>
         <ambientLight intensity={1} />
 
         <Galaxy />
+        <ShootingStars />
 
         {/* CORE */}
         <mesh>
-          <sphereGeometry args={[1.5, 32, 32]} />
+          <sphereGeometry args={[2, 32, 32]} />
           <meshStandardMaterial
             color="#c084fc"
             emissive="#c084fc"
@@ -143,11 +188,24 @@ export default function CertificateGalaxy() {
           />
         </mesh>
 
-        <OrbitCertificates 
-          data={certificates} 
-          onHover={setHovered} 
-          onLeave={() => setHovered(null)} 
+        {/* 🪐 INNER ORBIT */}
+        <OrbitCertificates
+          data={certificates.slice(0, 3)}
+          radius={5}
+          speed={0.002}
+          onHover={setHovered}
+          onLeave={() => setHovered(null)}
         />
+
+        {/* 🪐 OUTER ORBIT */}
+        <OrbitCertificates
+          data={certificates.slice(3)}
+          radius={9}
+          speed={0.001}
+          onHover={setHovered}
+          onLeave={() => setHovered(null)}
+        />
+
       </Canvas>
 
       {/* DESCRIPTION BOX */}
@@ -165,12 +223,14 @@ export default function CertificateGalaxy() {
             {hovered.desc}
           </p>
 
-          <button
-            onClick={() => window.open(hovered.file, "_blank")}
-            className="mt-3 text-xs text-purple-400 hover:text-purple-300 font-medium"
-          >
-            View Certificate →
-          </button>
+          {hovered.file && (
+            <button
+              onClick={() => window.open(hovered.file, "_blank")}
+              className="mt-3 text-xs text-purple-400 hover:text-purple-300 font-medium"
+            >
+              View Certificate →
+            </button>
+          )}
         </div>
       )}
     </section>

@@ -33,8 +33,7 @@ export default function Contact() {
 
           {/* 📧 EMAIL */}
           <motion.a
-            href="https://mail.google.com/mail/u/0/#inbox"
-            target="_blank"
+            href="mailto:your.email@example.com"
             whileHover={{ scale: 1.08 }}
             className="flex-1 p-6 rounded-2xl 
             bg-gradient-to-r from-pink-500/20 to-purple-500/20 
@@ -43,8 +42,9 @@ export default function Contact() {
             transition duration-300 cursor-pointer"
           >
             <p className="text-xl font-semibold">📧 Email</p>
-            <p className="text-gray-400 text-sm mt-2">
-              Reach me via Gmail
+            <p className="text-white font-medium mt-2">your.email@example.com</p>
+            <p className="text-gray-400 text-sm mt-1">
+              Send me a message
             </p>
           </motion.a>
 
@@ -60,7 +60,8 @@ export default function Contact() {
             transition duration-300 cursor-pointer"
           >
             <p className="text-xl font-semibold">💼 LinkedIn</p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-white font-medium mt-2">sneha-singh-01b053294</p>
+            <p className="text-gray-400 text-sm mt-1">
               Let’s connect professionally
             </p>
           </motion.a>
@@ -76,7 +77,8 @@ export default function Contact() {
             transition duration-300 cursor-pointer"
           >
             <p className="text-xl font-semibold">📱 Phone</p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-white font-medium mt-2">+91 91490 97768</p>
+            <p className="text-gray-400 text-sm mt-1">
               Call or WhatsApp
             </p>
           </motion.a>
