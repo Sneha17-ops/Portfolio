@@ -33,7 +33,7 @@ export default function Contact() {
 
           {/* 📧 EMAIL */}
           <motion.a
-            href="mailto:your.email@example.com"
+            href="mailto:ruhi52371@gmail.com"
             whileHover={{ scale: 1.08 }}
             className="flex-1 p-6 rounded-2xl 
             bg-gradient-to-r from-pink-500/20 to-purple-500/20 
@@ -42,7 +42,7 @@ export default function Contact() {
             transition duration-300 cursor-pointer"
           >
             <p className="text-xl font-semibold">📧 Email</p>
-            <p className="text-white font-medium mt-2">your.email@example.com</p>
+            <p className="text-white font-medium mt-2">ruhi52371@gmail.com</p>
             <p className="text-gray-400 text-sm mt-1">
               Send me a message
             </p>
